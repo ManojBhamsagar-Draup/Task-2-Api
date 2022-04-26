@@ -1,6 +1,6 @@
 from Models.model import Users, Admin
 from flask import Response, request
-import json
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource
 from Models.UserErrors import *
 
@@ -8,12 +8,13 @@ from Models.UserErrors import *
 class UserApi(Resource):
     def get(self, email):
         try:
-            user = Users.objects.get(email=email).to_json()
-            if user == "":
+            user = Users.objects(email=email).to_json()
+            print(type(user))
+            if user == "[]":
                 raise UserNotFoundError("The user doesn't exists")
             return Response(user, mimetype='application/json', status=200)
         except UserNotFoundError:
-            res = email + "does not exists"
+            res = email + " does not exists"
             return Response(res, mimetype='application/json', status=404)
 
 
@@ -22,6 +23,7 @@ class UsersApi(Resource):
         users = Users.objects.to_json()
         return Response(users, mimetype='application/json', status=200)
 
+    @jwt_required()
     def post(self):
         print(request)
         body = request.get_json()
