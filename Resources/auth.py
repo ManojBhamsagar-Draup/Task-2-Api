@@ -1,11 +1,22 @@
 from flask import request
-from flask_jwt_extended import create_access_token
 import flask_jwt_extended
 from flask_restful import Resource
 import datetime
 from Models.model import Users
-from flask_bcrypt import check_password_hash, generate_password_hash
+# from flask_bcrypt import check_password_hash, generate_password_hash
 import ast
+
+
+class SignupApi(Resource):
+    def post(self):
+        # print(request)
+        body = request.get_json()
+        # print(body)
+        # print(type(body))
+        user = Users(**body).save()
+        expires = datetime.timedelta(days=1)
+        access_token = flask_jwt_extended.create_access_token(identity=user.email, expires_delta=expires)
+        return {'name': user.name, 'token': access_token}, 200
 
 
 class LoginApi(Resource):
@@ -21,7 +32,7 @@ class LoginApi(Resource):
         # auth = check_password_hash(hash_pw, body.get('password'))
         if not auth:
             return {'error': 'Email or password invalid'}, 401
-        print('auth success')
+        # print('auth success')
         expires = datetime.timedelta(days=1)
         access_token = flask_jwt_extended.create_access_token(identity=record['email'], expires_delta=expires)
         return {'token': access_token}, 200
