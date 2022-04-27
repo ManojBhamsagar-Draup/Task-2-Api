@@ -3,10 +3,12 @@ from flask import Response, request
 from flask_jwt_extended import jwt_required
 from controllers.role_decorator import roles_required
 from flask_restful import Resource
-from flask_mail import Mail, Message
+from flask_mail import Message
 from flask import current_app
 from Configuration.config import mail
 from Models.UserErrors import *
+import matplotlib.pyplot as plt
+import ast
 
 
 class UserApi(Resource):
@@ -51,15 +53,20 @@ class UserDataApi(Resource):
     @roles_required(['user'])
     def get(self, email):
         user = Users.objects(email=email).to_json()
-        # email = 'manojsagar066@gmail.com'
-        # subject = 'testing'
-        # msg = 'testing'
-        # message = Message(subject, sender='tester2049tester@gmail.com', recipients=email)
-        # message.body = msg
-        # mail.send(message)
+        data = ast.literal_eval(user[1:-1])
+        y = data['calories']
+        x = list(range(1, len(y)+1))
+        plt.xlabel('days')
+        plt.ylabel('calories consumed')
+        plt.title(data['name'])
+        plt.plot(x, y, color='green', linestyle='dashed', linewidth=3, marker='o', markerfacecolor='blue',
+                 markersize=12)
+        plt.savefig('graph.png')
         email = 'tester2049tester@gmail.com'
         msg = Message('order details', sender=current_app.config.get('MAIL_USERNAME'), recipients=[email])
         msg.body = 'testing'
+        with current_app.open_resource("C:\\Users\\manoj\\Desktop\\Task-2-Api") as fp:
+            msg.attach("graph.png", "image/png", fp.read())
         mail.send(msg)
         return Response(user, mimetype='application/json', status=200)
 
@@ -75,5 +82,3 @@ class UserDataApi(Resource):
         print(total_calories)
         Users.objects(email=email).update(__raw__={'$push': {'calories': total_calories}})
         return Response("data added", mimetype='application/json', status=200)
-
-
