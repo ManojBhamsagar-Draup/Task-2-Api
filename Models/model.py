@@ -23,9 +23,3 @@ class Users(db.Document, DynamicDocument):
 
     # def check_password(self, password):
     #     return check_password_hash(self.password, password)
-
-
-class Admin(db.Document):
-    email: db.StringField(required=True, primary_key=True)
-    password: db.StringField(required=True)
-    role: db.StringField(required=True, default="admin")

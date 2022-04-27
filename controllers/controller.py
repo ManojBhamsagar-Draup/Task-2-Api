@@ -1,6 +1,7 @@
-from Models.model import Users, Admin
+from Models.model import Users
 from flask import Response, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from controllers.role_decorator import roles_required
 from flask_restful import Resource
 from Models.UserErrors import *
 
@@ -19,6 +20,8 @@ class UserApi(Resource):
 
 
 class UsersApi(Resource):
+    @jwt_required()
+    @roles_required(['admin'])
     def get(self):
         users = Users.objects.to_json()
         return Response(users, mimetype='application/json', status=200)
