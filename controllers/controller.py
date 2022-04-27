@@ -3,6 +3,9 @@ from flask import Response, request
 from flask_jwt_extended import jwt_required
 from controllers.role_decorator import roles_required
 from flask_restful import Resource
+from flask_mail import Mail, Message
+from flask import current_app
+from Configuration.config import mail
 from Models.UserErrors import *
 
 
@@ -45,10 +48,19 @@ class UsersApi(Resource):
 
 class UserDataApi(Resource):
     @jwt_required()
-    @roles_required(['admin'])
+    @roles_required(['user'])
     def get(self, email):
         user = Users.objects(email=email).to_json()
-        print(user)
+        # email = 'manojsagar066@gmail.com'
+        # subject = 'testing'
+        # msg = 'testing'
+        # message = Message(subject, sender='tester2049tester@gmail.com', recipients=email)
+        # message.body = msg
+        # mail.send(message)
+        email = 'tester2049tester@gmail.com'
+        msg = Message('order details', sender=current_app.config.get('MAIL_USERNAME'), recipients=[email])
+        msg.body = 'testing'
+        mail.send(msg)
         return Response(user, mimetype='application/json', status=200)
 
     @jwt_required()
@@ -63,3 +75,5 @@ class UserDataApi(Resource):
         print(total_calories)
         Users.objects(email=email).update(__raw__={'$push': {'calories': total_calories}})
         return Response("data added", mimetype='application/json', status=200)
+
+
