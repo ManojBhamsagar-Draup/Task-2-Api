@@ -70,7 +70,6 @@ class UserDataApi(Resource):
         with current_app.open_resource("C://Users//manoj//Desktop//Task-2-Api//graph.png") as fp:
             msg.attach("graph.png", "image/png", fp.read())
         mail.send(msg)
-        import os
         if os.path.exists("C://Users//manoj//Desktop//Task-2-Api//graph.png"):
             os.remove("C://Users//manoj//Desktop//Task-2-Api//graph.png")
         else:
