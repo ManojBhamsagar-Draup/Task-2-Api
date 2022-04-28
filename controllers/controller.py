@@ -7,6 +7,7 @@ from flask_mail import Message
 from flask import current_app
 from Configuration.config import mail
 from Models.UserErrors import *
+import os
 import matplotlib.pyplot as plt
 import ast
 
@@ -54,6 +55,7 @@ class UserDataApi(Resource):
     def get(self, email):
         user = Users.objects(email=email).to_json()
         data = ast.literal_eval(user[1:-1])
+        # plot graph
         y = data['calories']
         x = list(range(1, len(y)+1))
         plt.xlabel('days')
@@ -65,9 +67,14 @@ class UserDataApi(Resource):
         email = 'tester2049tester@gmail.com'
         msg = Message('order details', sender=current_app.config.get('MAIL_USERNAME'), recipients=[email])
         msg.body = 'testing'
-        with current_app.open_resource("C:\\Users\\manoj\\Desktop\\Task-2-Api") as fp:
+        with current_app.open_resource("C://Users//manoj//Desktop//Task-2-Api//graph.png") as fp:
             msg.attach("graph.png", "image/png", fp.read())
         mail.send(msg)
+        import os
+        if os.path.exists("C://Users//manoj//Desktop//Task-2-Api//graph.png"):
+            os.remove("C://Users//manoj//Desktop//Task-2-Api//graph.png")
+        else:
+            print("The file does not exist")
         return Response(user, mimetype='application/json', status=200)
 
     @jwt_required()
