@@ -1,6 +1,6 @@
 from Models.model import Users
 from flask import Response, request
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from controllers.role_decorator import roles_required
 from flask_restful import Resource
 from flask_mail import Message
@@ -18,7 +18,7 @@ class UserApi(Resource):
     def get(self, email):
         try:
             user = Users.objects(email=email).to_json()
-            print(type(user))
+            # print(type(user))
             if user == "[]":
                 raise UserNotFoundError("The user doesn't exists")
             return Response(user, mimetype='application/json', status=200)
@@ -52,7 +52,8 @@ class UsersApi(Resource):
 class UserDataApi(Resource):
     @jwt_required()
     @roles_required(['user'])
-    def get(self, email):
+    def get(self):
+        email = get_jwt_identity()
         user = Users.objects(email=email).to_json()
         data = ast.literal_eval(user[1:-1])
         # plot graph
@@ -77,7 +78,8 @@ class UserDataApi(Resource):
         return Response(user, mimetype='application/json', status=200)
 
     @jwt_required()
-    def put(self, email):
+    def put(self):
+        email = get_jwt_identity()
         user = Users.objects(email=email).to_json()
         if user == "[]":
             res = email + " does not exists"
