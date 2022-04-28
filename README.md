@@ -16,7 +16,7 @@ Tracking your daily calorie consumption helps you in maintaining good diet and p
 3. Install the requirements present in the requirements.txt by typing the command `pip3 install requirements.txt`                                                      
 4. Create a connection in mongodb, with a new database.
 5. Create a collection called users.
-6. Setup your mail configurations with the help of [flask_mail](https://pythonhosted.org/Flask-Mail/) and mention JWT_SECRETE_KEY in main app.
+6. Setup your mail configurations with the help of [flask_mail](https://pythonhosted.org/Flask-Mail/) and mention JWT_SECRETE_KEY in app.py                         
 7.Command to run the app - `flask run`
 ## Testing api's
 1. make use postman to test api
