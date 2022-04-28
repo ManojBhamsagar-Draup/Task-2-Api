@@ -1,13 +1,19 @@
+"""
+    Login or signup to application will generate a jwt token
+"""
+
 from flask import request
 import flask_jwt_extended
 from flask_restful import Resource
 import datetime
 from Models.model import Users
-# from flask_bcrypt import check_password_hash, generate_password_hash
 import ast
 
 
 class SignupApi(Resource):
+    """
+        Signup to app
+    """
     def post(self):
         # print(request)
         body = request.get_json()
@@ -20,6 +26,9 @@ class SignupApi(Resource):
 
 
 class LoginApi(Resource):
+    """
+        Login to app
+    """
     def post(self):
         body = request.get_json()
         user = Users.objects(email=body.get('email'))
@@ -27,9 +36,6 @@ class LoginApi(Resource):
         auth = False
         if record['password'] == body.get('password'):
             auth = True
-        # hash_pw = generate_password_hash(record['password'], rounds=10).decode('utf8')
-        # print(hash_pw)
-        # auth = check_password_hash(hash_pw, body.get('password'))
         if not auth:
             return {'error': 'Email or password invalid'}, 401
         # print('auth success')

@@ -3,6 +3,9 @@ from Resources.auth import LoginApi, SignupApi
 
 
 def initialize_routes(api):
+    """
+        Initializing all api end points of the application
+    """
     api.add_resource(UserApi, '/users/<email>')
     api.add_resource(UsersApi, '/users')
     api.add_resource(UserDataApi, '/data')

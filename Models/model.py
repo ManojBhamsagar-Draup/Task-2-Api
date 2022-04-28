@@ -4,6 +4,9 @@ from Configuration.config import db
 
 
 class Users(db.Document, DynamicDocument):
+    """
+        Schema of Users collection
+    """
     name = db.StringField(required=True),
     email = db.StringField(required=True, primary_key=True),
     password = db.StringField(required=True)

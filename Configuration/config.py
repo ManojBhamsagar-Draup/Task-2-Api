@@ -1,3 +1,8 @@
+"""
+    This file contains configuration of app.
+     app db and mail are initialized here.
+"""
+
 from flask_mongoengine import MongoEngine
 from flask_mail import Mail
 

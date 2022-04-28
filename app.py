@@ -1,3 +1,7 @@
+"""
+    Program execution starts here.
+"""
+
 from flask import Flask
 from Configuration.config import initialize_db, initialize_mail
 from Resources.routes import initialize_routes

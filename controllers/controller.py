@@ -1,3 +1,10 @@
+"""
+    This file handles crud operations with the database.
+    decorators used:
+    1) jwt_required - checks whether token is present in the authorization header.
+    2) roles_required - checks roles of the user before giving access to api.
+"""
+
 from Models.model import Users
 from flask import Response, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -13,6 +20,9 @@ import ast
 
 
 class UserApi(Resource):
+    """
+        Retrieving particular user by admin.
+    """
     @jwt_required()
     @roles_required(['admin'])
     def get(self, email):
@@ -28,6 +38,11 @@ class UserApi(Resource):
 
 
 class UsersApi(Resource):
+    """
+        checking users data.
+        get - retrieve all users data.
+        delete - delete particular user with the given email.
+    """
     @jwt_required()
     @roles_required(['admin'])
     def get(self):
@@ -50,6 +65,11 @@ class UsersApi(Resource):
 
 
 class UserDataApi(Resource):
+    """
+        crud operations on user data.
+        get - user will get his data and a graph that describes his calorie consumption is mailed.
+        put - user can add the amount of calories he consumed in a day and update his data.
+    """
     @jwt_required()
     @roles_required(['user'])
     def get(self):
@@ -58,6 +78,8 @@ class UserDataApi(Resource):
         data = ast.literal_eval(user[1:-1])
         # plot graph
         y = data['calories']
+        if not y:
+            return Response("no data about calorie consumption" + user, mimetype='application/json', status=200)
         x = list(range(1, len(y)+1))
         plt.xlabel('days')
         plt.ylabel('calories consumed')
@@ -67,7 +89,7 @@ class UserDataApi(Resource):
         plt.savefig('graph.png')
         email = 'tester2049tester@gmail.com'
         msg = Message('order details', sender=current_app.config.get('MAIL_USERNAME'), recipients=[email])
-        msg.body = 'testing'
+        msg.body = 'Hi {} your calorie consumption history is attached as a graph'.format(data['name'])
         with current_app.open_resource("C://Users//manoj//Desktop//Task-2-Api//graph.png") as fp:
             msg.attach("graph.png", "image/png", fp.read())
         mail.send(msg)
