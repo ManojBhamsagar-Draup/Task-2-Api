@@ -1,9 +1,10 @@
 from mongoengine import *
 from Configuration.config import db
-# from flask_bcrypt import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash
 
 
-class Users(db.Document, DynamicDocument):
+class Users(db.Document, DynamicDocument, UserMixin):
     """
         Schema of Users collection
     """
@@ -21,7 +22,4 @@ class Users(db.Document, DynamicDocument):
     def __init__(self, *args, **kwargs):
         super(Users, self).__init__(*args, **kwargs)
         self.bmi = round((self.weight/(self.height ** 2)), 2)
-        # self.password = generate_password_hash(self.password, rounds=10).decode('utf8')
-
-    # def check_password(self, password):
-    #     return check_password_hash(self.password, password)
+        self.password = generate_password_hash(self.password)

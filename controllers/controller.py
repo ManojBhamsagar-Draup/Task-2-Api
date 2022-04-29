@@ -88,7 +88,7 @@ class UserDataApi(Resource):
                  markersize=12)
         plt.savefig('graph.png')
         email = 'tester2049tester@gmail.com'
-        msg = Message('order details', sender=current_app.config.get('MAIL_USERNAME'), recipients=[email])
+        msg = Message('Calorie Tracker', sender=current_app.config.get('MAIL_USERNAME'), recipients=[email])
         msg.body = 'Hi {} your calorie consumption history is attached as a graph'.format(data['name'])
         with current_app.open_resource("C://Users//manoj//Desktop//Task-2-Api//graph.png") as fp:
             msg.attach("graph.png", "image/png", fp.read())

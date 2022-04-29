@@ -8,6 +8,7 @@ from flask_restful import Resource
 import datetime
 from Models.model import Users
 import ast
+from werkzeug.security import check_password_hash
 
 
 class SignupApi(Resource):
@@ -34,7 +35,7 @@ class LoginApi(Resource):
         user = Users.objects(email=body.get('email'))
         record = ast.literal_eval(user.to_json()[1:-1])
         auth = False
-        if record['password'] == body.get('password'):
+        if check_password_hash(record['password'], body.get('password')):
             auth = True
         if not auth:
             return {'error': 'Email or password invalid'}, 401
